@@ -123,8 +123,12 @@ function html(v){
   const kop = `<span class="nr">${esc(v.nr)}.</span>${esc(v.label)}${v.hint ? ` <span class="hint">(${esc(v.hint)})</span>` : ''}`;
   if (v.type === 'open') return `<div class="vraag"><label for="${id(v)}">${kop}</label><textarea id="${id(v)}"></textarea></div>`;
   if (v.type === 'datum') return `<div class="vraag"><label for="${id(v)}">${kop}</label><input type="date" id="${id(v)}"></div>`;
-  if (v.type === 'een' || v.type === 'meer')
-    return `<div class="vraag"><div class="label">${kop}</div><div class="chips" data-soort="${v.type}" data-vraag="${esc(v.nr)}">${v.opties.map(o=>`<button type="button" class="chip" aria-pressed="false">${esc(o)}</button>`).join('')}</div></div>`;
+  if (v.type === 'een' || v.type === 'meer') {
+    const anders = v.opties.includes('Anders')
+      ? `<div class="vervolg anders" hidden><label for="${id(v)}-anders">Wat anders?</label><input type="text" id="${id(v)}-anders" placeholder="Typ hier je antwoord"></div>`
+      : '';
+    return `<div class="vraag"><div class="label">${kop}</div><div class="chips" data-soort="${v.type}" data-vraag="${esc(v.nr)}">${v.opties.map(o=>`<button type="button" class="chip" aria-pressed="false">${esc(o)}</button>`).join('')}</div>${anders}</div>`;
+  }
   if (v.type === 'schaal')
     return `<div class="vraag"><div class="label">${kop}</div><div class="schaal" data-soort="een" data-vraag="${esc(v.nr)}">${[1,2,3,4,5].map(n=>`<button type="button" aria-pressed="false">${n}</button>`).join('')}</div><div class="schaal-uitleg"><span>1 = ${esc(v.laag)}</span><span>5 = ${esc(v.hoog)}</span></div></div>`;
   if (v.type === 'jn') {
@@ -150,8 +154,14 @@ document.getElementById('vragen').addEventListener('click', e => {
   } else {
     groep.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === knop ? 'true' : 'false'));
   }
-  const vervolg = groep.parentElement.querySelector('.vervolg');
+  const vervolg = groep.parentElement.querySelector('.vervolg:not(.anders)');
   if (vervolg && knop.dataset.w) vervolg.hidden = knop.dataset.w !== vervolg.dataset.bij;
+  const anders = groep.parentElement.querySelector('.vervolg.anders');
+  if (anders) {
+    const andersAan = [...groep.querySelectorAll('button')].some(b => b.textContent.trim() === 'Anders' && b.getAttribute('aria-pressed') === 'true');
+    anders.hidden = !andersAan;
+    if (andersAan && knop.textContent.trim() === 'Anders') anders.querySelector('input').focus();
+  }
 });
 
 const FUNCTIE = 'https://ckpxdkodiaxpsfmackat.supabase.co/functions/v1/vragenlijst-opslaan';
@@ -166,7 +176,12 @@ function verzamel(){
     if (g.classList.contains('schaal')) a[nr] = Number(aan[0]);
     else if (g.dataset.soort === 'meer') a[nr] = aan;
     else a[nr] = aan[0];
-    const vervolg = g.parentElement.querySelector('.vervolg');
+    const anders = g.parentElement.querySelector('.vervolg.anders');
+    if (anders && !anders.hidden) {
+      const tekst = anders.querySelector('input').value.trim();
+      if (tekst) a[nr + '-anders'] = tekst;
+    }
+    const vervolg = g.parentElement.querySelector('.vervolg:not(.anders)');
     if (vervolg && !vervolg.hidden) {
       const veld = vervolg.querySelector('textarea,input');
       if (veld && veld.value.trim()) a[nr + '-vervolg'] = veld.type === 'number' ? Number(veld.value) : veld.value.trim();
