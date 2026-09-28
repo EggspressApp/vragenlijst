@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eggspress Verkopersvragenlijst</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --rood:#E0281C; --rood-zacht:#FBE3E1; --creme:#FAF6EE; --kaart:#FFFFFF; --rand:#EAE1CF;
+    --tekst:#241C14; --muted:#8C7F6B; --op-rood:#FFFFFF; --fout:#B3261E; --banner:#FFF4D6; --banner-tekst:#5C4712;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --rood:#F0564B; --rood-zacht:#3A1D1A; --creme:#1B1712; --kaart:#25201A; --rand:#3A3228;
+      --tekst:#F3ECE0; --muted:#B3A690; --op-rood:#FFFFFF; --fout:#FF8A80; --banner:#3A3218; --banner-tekst:#F2DFA6;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --rood:#F0564B; --rood-zacht:#3A1D1A; --creme:#1B1712; --kaart:#25201A; --rand:#3A3228;
+    --tekst:#F3ECE0; --muted:#B3A690; --op-rood:#FFFFFF; --fout:#FF8A80; --banner:#3A3218; --banner-tekst:#F2DFA6;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--creme);color:var(--tekst);margin:0;padding:28px 16px 60px}
+  .banner{max-width:560px;margin:0 auto 14px;background:var(--banner);color:var(--banner-tekst);border-radius:10px;padding:10px 14px;font-size:12.5px;line-height:1.5}
+  .kaart{max-width:560px;margin:0 auto;background:var(--kaart);border:1px solid var(--rand);border-radius:16px;overflow:hidden;box-shadow:0 2px 18px rgba(36,28,20,.05)}
+  .kop{background:var(--rood);padding:24px 26px 22px;text-align:center;color:var(--op-rood)}
+  .logo{height:26px;width:auto;max-width:100%;background:#fff;padding:8px 16px;border-radius:8px;display:inline-block;margin-bottom:14px}
+  .kop .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+  .kop h1{font-size:20px;margin:0;font-weight:800;text-wrap:balance}
+  .lijf{padding:26px}
+  .intro{font-size:14px;color:var(--muted);line-height:1.6;margin:0 0 6px}
+  .sectie{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--rood);font-weight:800;margin:30px 0 0;padding-top:18px;border-top:1px solid var(--rand)}
+  .vraag{margin-top:20px}
+  .vraag > label, .vraag > .label{display:block;font-size:13.5px;font-weight:700;margin:0 0 8px;line-height:1.45}
+  .nr{color:var(--rood);margin-right:4px;font-variant-numeric:tabular-nums}
+  .hint{font-weight:400;color:var(--muted)}
+  .rij{display:flex;gap:10px;flex-wrap:wrap}
+  .rij > div{flex:1 1 180px}
+  input[type=text],input[type=number],input[type=date],textarea{width:100%;padding:11px 13px;border:1px solid var(--rand);border-radius:8px;font-size:14px;font-family:inherit;background:var(--kaart);color:var(--tekst)}
+  textarea{resize:vertical;min-height:64px}
+  input:focus,textarea:focus,.chip:focus-visible,.schaal button:focus-visible,.jn button:focus-visible{outline:2px solid var(--rood);outline-offset:1px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--rand);border-radius:20px;padding:8px 14px;font-size:12.5px;cursor:pointer;background:var(--creme);color:var(--tekst);font-family:inherit}
+  .chip[aria-pressed="true"]{background:var(--rood);border-color:var(--rood);color:var(--op-rood);font-weight:700}
+  .schaal{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .schaal button{padding:11px 0;border-radius:8px;border:1px solid var(--rand);background:var(--kaart);color:var(--tekst);font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+  .schaal button[aria-pressed="true"]{background:var(--rood);border-color:var(--rood);color:var(--op-rood)}
+  .schaal-uitleg{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px}
+  .jn{display:flex;gap:10px}
+  .jn button{flex:1;padding:11px;border-radius:8px;border:1px solid var(--rand);background:var(--kaart);font-size:13px;font-weight:700;cursor:pointer;color:var(--tekst);font-family:inherit}
+  .jn button[aria-pressed="true"]{background:var(--rood);border-color:var(--rood);color:var(--op-rood)}
+  .vervolg{margin-top:12px;padding:12px 14px;background:var(--creme);border:1px solid var(--rand);border-radius:10px}
+  .vervolg > label{display:block;font-size:13px;font-weight:700;margin:0 0 8px}
+  button.verstuur:disabled{opacity:.6;cursor:wait}
+  button.verstuur{margin-top:28px;width:100%;background:var(--rood);color:var(--op-rood);border:none;font-weight:700;font-size:15px;padding:15px 20px;border-radius:10px;cursor:pointer;font-family:inherit}
+  .melding{margin-top:12px;font-size:13px;color:var(--muted);text-align:center}
+  .voettekst{text-align:center;font-size:11px;color:var(--muted);margin-top:16px;line-height:1.5}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="kaart">
+  <div class="kop">
+    <img class="logo" src="https://www.eggspress.nl/wp-content/uploads/2026/03/eggspress.svg" alt="Eggspress">
+    <div class="eyebrow">Vragenlijst voor verkopers</div>
+    <h1>Hoe gaat het verkopen?</h1>
+  </div>
+  <form class="lijf" id="formulier" novalidate>
+    <p class="intro">Hoi! Met deze vragenlijst wil ik het verkopen voor jullie makkelijker en leuker maken. Het invullen duurt ongeveer 5 minuten. Er zijn geen foute antwoorden: eerlijke antwoorden helpen me het meest.</p>
+
+    <div class="vraag">
+      <div class="label">Wat is je naam?</div>
+      <div class="rij">
+        <div><input type="text" id="voornaam" placeholder="Voornaam" autocomplete="given-name"></div>
+        <div><input type="text" id="achternaam" placeholder="Achternaam" autocomplete="family-name"></div>
+      </div>
+    </div>
+
+    <div class="sectie">Over jou als verkoper</div>
+    <div id="vragen"></div>
+
+    <button type="submit" class="verstuur">Versturen</button>
+    <div class="melding" id="melding" hidden></div>
+    <div class="voettekst">Je antwoorden gaan alleen naar Eggspress. In mijn schoolverslag komt je naam niet.</div>
+  </form>
+</div>
+
+<script>
+const V = [
+  {nr:'1', type:'een', label:'Hoe lang verkoop je al eieren via Eggspress?', opties:['Minder dan 3 maanden','3 – 6 maanden','6 – 12 maanden','Langer dan 1 jaar']},
+  {nr:'2', type:'een', label:'Hoeveel dozen verkoop je gemiddeld per week?', opties:['Minder dan 20','20 – 30','30 – 40','40 – 50','Meer dan 50']},
+  {nr:'3', type:'meer', label:'Waarom ben je begonnen met verkopen?', hint:'Meerdere antwoorden mogelijk', opties:['Geld verdienen','Via vrienden / familie','Gezellig contact met mensen','Iets nieuws proberen','Anders']},
+  {nr:'4', type:'schaal', label:'Hoe leuk vind je het om te verkopen?', laag:'Niet leuk', hoog:'Heel leuk'},
+  {sectie:'Hoeveel je verkoopt'},
+  {nr:'5', type:'schaal', label:'Ik ben tevreden met het aantal dozen dat ik nu verkoop.', laag:'Helemaal niet mee eens', hoog:'Helemaal mee eens'},
+  {nr:'6', type:'schaal', label:'Ik zou meer willen verkopen dan ik nu doe.', laag:'Helemaal niet mee eens', hoog:'Helemaal mee eens'},
+  {nr:'7', type:'schaal', label:'Ik heb het gevoel dat ik meer zou kúnnen verkopen.', laag:'Helemaal niet mee eens', hoog:'Helemaal mee eens'},
+  {nr:'8', type:'meer', label:'Waarom verkoop je niet meer dan je nu doet?', hint:'Meerdere antwoorden mogelijk', opties:['Ik heb er niet meer tijd voor','Ik weet niet goed hoe ik moet groeien','Het kost te veel energie','Ik vind het huidige aantal genoeg','Ik heb geen zin om meer moeite te doen','Anders']},
+  {nr:'9A', type:'open', label:'Wat houdt jou het meest tegen om meer te verkopen?'},
+  {nr:'9B', type:'jn', label:'Stel dat ik je hierbij help, zou je dan meer willen verkopen?'},
+  {sectie:'Nieuwe klanten'},
+  {nr:'10', type:'een', label:'Hoe vaak probeer jij actief nieuwe klanten te krijgen?', opties:['Nooit','Soms','Regelmatig']},
+  {nr:'11A', type:'jn', label:'Vind je het makkelijk om nieuwe klanten te krijgen?', bij:'nee', vervolg:{nr:'11B', label:'Waarom niet?'}},
+  {nr:'12', type:'een', label:'Wat werkt volgens jou het beste om nieuwe klanten te krijgen?', opties:['Aanbellen','Folders','Mond-tot-mond','Anders']},
+  {sectie:'Motivatie en doelen'},
+  {nr:'13', type:'meer', label:'Wat zou jou motiveren om meer te verkopen?', hint:'Meerdere antwoorden mogelijk', opties:['Bonus bij meer verkoop','Beloning voor nieuwe klanten','Tips / begeleiding','Eenmalige buddy om meer klanten te krijgen','Competitie met andere verkopers','Niks, ik vind het zo goed']},
+  {nr:'14', type:'open', label:'Is er nog iets anders dat jou zou motiveren om meer te verkopen?'},
+  {nr:'15', type:'schaal', label:'Ik zou meer verkopen als het minder tijd kost.', laag:'Helemaal niet mee eens', hoog:'Helemaal mee eens'},
+  {nr:'16A', type:'jn', label:'Zou je een doel willen hebben voor het aantal doosjes eieren dat je dit jaar nog zou willen verkopen (per week)?', bij:'ja', vervolg:{nr:'', label:'Hoeveel doosjes per week zou je doel zijn?', getal:true}},
+  {nr:'16B', type:'jn', label:'Zou je daarbij geholpen willen worden?', bij:'ja', vervolg:{nr:'', label:'Hoe zou ik je het beste kunnen helpen?'}},
+  {sectie:'Tot slot'},
+  {nr:'17', type:'datum', label:'Wanneer ben je jarig?', hint:'Optioneel, voor onze verjaardagskalender'}
+];
+
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const id = v => 'v' + v.nr.toLowerCase();
+
+function html(v){
+  if (v.sectie) return `<div class="sectie">${esc(v.sectie)}</div>`;
+  const kop = `<span class="nr">${esc(v.nr)}.</span>${esc(v.label)}${v.hint ? ` <span class="hint">(${esc(v.hint)})</span>` : ''}`;
+  if (v.type === 'open') return `<div class="vraag"><label for="${id(v)}">${kop}</label><textarea id="${id(v)}"></textarea></div>`;
+  if (v.type === 'datum') return `<div class="vraag"><label for="${id(v)}">${kop}</label><input type="date" id="${id(v)}"></div>`;
+  if (v.type === 'een' || v.type === 'meer')
+    return `<div class="vraag"><div class="label">${kop}</div><div class="chips" data-soort="${v.type}" data-vraag="${esc(v.nr)}">${v.opties.map(o=>`<button type="button" class="chip" aria-pressed="false">${esc(o)}</button>`).join('')}</div></div>`;
+  if (v.type === 'schaal')
+    return `<div class="vraag"><div class="label">${kop}</div><div class="schaal" data-soort="een" data-vraag="${esc(v.nr)}">${[1,2,3,4,5].map(n=>`<button type="button" aria-pressed="false">${n}</button>`).join('')}</div><div class="schaal-uitleg"><span>1 = ${esc(v.laag)}</span><span>5 = ${esc(v.hoog)}</span></div></div>`;
+  if (v.type === 'jn') {
+    let vervolg = '';
+    if (v.vervolg) {
+      const vid = id(v) + '-vervolg';
+      const veld = v.vervolg.getal ? `<input type="number" min="1" id="${vid}" placeholder="Bijv. 40">` : `<textarea id="${vid}"></textarea>`;
+      vervolg = `<div class="vervolg" data-bij="${v.bij}" hidden><label for="${vid}">${v.vervolg.nr ? `<span class="nr">${esc(v.vervolg.nr)}.</span>` : ''}${esc(v.vervolg.label)}</label>${veld}</div>`;
+    }
+    return `<div class="vraag"><div class="label">${kop}</div><div class="jn" data-soort="een" data-vraag="${esc(v.nr)}"><button type="button" aria-pressed="false" data-w="ja">Ja</button><button type="button" aria-pressed="false" data-w="nee">Nee</button></div>${vervolg}</div>`;
+  }
+}
+
+document.getElementById('vragen').innerHTML = V.map(html).join('');
+
+document.getElementById('vragen').addEventListener('click', e => {
+  const knop = e.target.closest('button');
+  if (!knop) return;
+  const groep = knop.parentElement;
+  const soort = groep.dataset.soort;
+  if (soort === 'meer') {
+    knop.setAttribute('aria-pressed', knop.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+  } else {
+    groep.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === knop ? 'true' : 'false'));
+  }
+  const vervolg = groep.parentElement.querySelector('.vervolg');
+  if (vervolg && knop.dataset.w) vervolg.hidden = knop.dataset.w !== vervolg.dataset.bij;
+});
+
+const FUNCTIE = 'https://ckpxdkodiaxpsfmackat.supabase.co/functions/v1/vragenlijst-opslaan';
+const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrcHhka29kaWF4cHNmbWFja2F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MDcyODksImV4cCI6MjA5NzA4MzI4OX0.kzzUr4AGPcypNXPoBWyb2WpKpK8Gq2fNyFfb9UJGiL0';
+
+function verzamel(){
+  const a = {};
+  document.querySelectorAll('[data-vraag]').forEach(g => {
+    const aan = [...g.querySelectorAll('button[aria-pressed="true"]')].map(b => b.dataset.w || b.textContent.trim());
+    if (!aan.length) return;
+    const nr = g.dataset.vraag;
+    if (g.classList.contains('schaal')) a[nr] = Number(aan[0]);
+    else if (g.dataset.soort === 'meer') a[nr] = aan;
+    else a[nr] = aan[0];
+    const vervolg = g.parentElement.querySelector('.vervolg');
+    if (vervolg && !vervolg.hidden) {
+      const veld = vervolg.querySelector('textarea,input');
+      if (veld && veld.value.trim()) a[nr + '-vervolg'] = veld.type === 'number' ? Number(veld.value) : veld.value.trim();
+    }
+  });
+  V.filter(v => v.type === 'open' || v.type === 'datum').forEach(v => {
+    const el = document.getElementById(id(v));
+    if (el && el.value.trim()) a[v.nr] = el.value.trim();
+  });
+  return a;
+}
+
+document.getElementById('formulier').addEventListener('submit', async e => {
+  e.preventDefault();
+  const melding = document.getElementById('melding');
+  const knop = document.querySelector('button.verstuur');
+  const voornaam = document.getElementById('voornaam').value.trim();
+  const achternaam = document.getElementById('achternaam').value.trim();
+  melding.hidden = false; melding.style.color = '';
+  if (!voornaam || !achternaam) { melding.textContent = 'Vul je voor- en achternaam in.'; melding.style.color = 'var(--fout)'; document.getElementById(voornaam ? 'achternaam' : 'voornaam').focus(); return; }
+  knop.disabled = true; knop.textContent = 'Bezig met versturen...';
+  melding.textContent = '';
+  try {
+    const res = await fetch(FUNCTIE, { method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${ANON}`, apikey: ANON}, body: JSON.stringify({ voornaam, achternaam, antwoorden: verzamel() }) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.success) throw new Error(data.fout || 'Er ging iets mis bij het versturen.');
+    document.getElementById('formulier').innerHTML = `<div style="text-align:center;padding:20px 0"><div style="font-size:44px;margin-bottom:10px">🙏</div><p class="intro" style="margin:0">Bedankt, ${esc(voornaam)}! Je antwoorden zijn verstuurd.</p></div>`;
+    window.scrollTo(0,0);
+  } catch (err) {
+    knop.disabled = false; knop.textContent = 'Versturen';
+    melding.textContent = err.message + ' Probeer het nog een keer.'; melding.style.color = 'var(--fout)';
+  }
+});
+</script>
+</body>
+</html>
