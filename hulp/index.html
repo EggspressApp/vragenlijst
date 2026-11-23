@@ -131,8 +131,10 @@ const LOS = ['Weet ik niet','Niets van deze','Ik houd het eigenlijk niet bij'];
 const echt = l => (l || []).filter(o => !LOS.includes(o) && o !== 'Anders');
 // Volgorde per persoon door elkaar (vaste slotopties blijven onderaan), zodat de eerste optie niet vanzelf vaker wordt gekozen
 const VAST_ACHTER = ['Weet ik niet','Niets van deze','Zoals ik het nu doe, ik heb niks nodig','Anders'];
-function hussel(l){ const a = l.filter(o => !VAST_ACHTER.includes(o)), b = l.filter(o => VAST_ACHTER.includes(o));
-  for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a.concat(b); }
+const VAST_VOOR = ['Elke week een klein doel, zoals een paar adressen om aan te bellen'];
+function hussel(l){ const v = l.filter(o => VAST_VOOR.includes(o)), b = l.filter(o => VAST_ACHTER.includes(o));
+  const a = l.filter(o => !VAST_ACHTER.includes(o) && !VAST_VOOR.includes(o));
+  for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return v.concat(a, b); }
 V.forEach(v => { if (v.hussel && Array.isArray(v.opties)) v.opties = hussel(v.opties); });
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 const A = {};            // antwoorden
