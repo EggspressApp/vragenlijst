@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Wat helpt jou verder?</title>
+<meta name="robots" content="noindex">
+<style>
+  /* Huisstijl van de bestaande Eggspress-vragenlijst: rode kop, crème ondergrond, één kaart, keuzechips */
+  :root{
+    --rood:#E0281C; --creme:#FAF6EE; --kaart:#FFFFFF; --rand:#EAE1CF;
+    --tekst:#241C14; --muted:#8C7F6B; --op-rood:#FFFFFF; --fout:#B3261E; --banner:#FFF4D6; --banner-tekst:#5C4712;
+    --zacht:#F4EEE2;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --rood:#F0564B; --creme:#1B1712; --kaart:#25201A; --rand:#3A3228;
+      --tekst:#F3ECE0; --muted:#B3A690; --op-rood:#FFFFFF; --fout:#FF8A80; --banner:#3A3218; --banner-tekst:#F2DFA6;
+      --zacht:#2E2820; color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --rood:#F0564B; --creme:#1B1712; --kaart:#25201A; --rand:#3A3228;
+    --tekst:#F3ECE0; --muted:#B3A690; --op-rood:#FFFFFF; --fout:#FF8A80; --banner:#3A3218; --banner-tekst:#F2DFA6;
+    --zacht:#2E2820; color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--creme);color:var(--tekst);margin:0;
+       padding-block:28px 60px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+  .banner{max-width:560px;margin:0 auto 14px;background:var(--banner);color:var(--banner-tekst);border-radius:10px;padding:10px 14px;font-size:12.5px;line-height:1.5}
+  .kaart{max-width:560px;margin:0 auto;background:var(--kaart);border:1px solid var(--rand);border-radius:16px;overflow:hidden;box-shadow:0 2px 18px rgba(36,28,20,.05)}
+  .kop{background:var(--rood);padding:24px 26px 22px;text-align:center;color:var(--op-rood)}
+  .logo{height:26px;width:auto;max-width:100%;background:#fff;padding:8px 16px;border-radius:8px;display:inline-block;margin-bottom:14px;box-sizing:content-box}
+  .kop .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+  .kop h1{font-size:20px;margin:0;font-weight:800;text-wrap:balance}
+  .lijf{padding:26px;counter-reset:vraag}
+  .intro{font-size:14px;color:var(--muted);line-height:1.6;margin:0}
+  .sectie{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--rood);font-weight:800;margin:30px 0 0;padding-top:18px;border-top:1px solid var(--rand)}
+  .sectie-uitleg{font-size:12.5px;color:var(--muted);margin:6px 0 0;line-height:1.5}
+  .vraag{margin-top:20px;counter-increment:vraag}
+  .vraag.vervolg-vraag{margin-top:12px;padding:14px;background:var(--zacht);border:1px solid var(--rand);border-radius:10px}
+  .vraag > label, .vraag > .label{display:block;font-size:13.5px;font-weight:700;margin:0 0 8px;line-height:1.45}
+  .vraag > label::before, .vraag > .label::before{content:counter(vraag) ". ";color:var(--rood);font-variant-numeric:tabular-nums}
+  .hint{font-weight:400;color:var(--muted)}
+  .sub{display:block;font-weight:400;font-size:12.5px;color:var(--muted);margin-top:3px}
+  .rij{display:flex;gap:10px;flex-wrap:wrap}
+  .rij > div{flex:1 1 180px;min-width:0}
+  input[type=text],textarea{width:100%;padding:11px 13px;border:1px solid var(--rand);border-radius:8px;font-size:14px;font-family:inherit;background:var(--kaart);color:var(--tekst)}
+  textarea{resize:vertical;min-height:64px}
+  input:focus,textarea:focus,.chip:focus-visible{outline:2px solid var(--rood);outline-offset:1px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--rand);border-radius:20px;padding:8px 14px;font-size:12.5px;cursor:pointer;background:var(--creme);color:var(--tekst);font-family:inherit;text-align:left;line-height:1.35}
+  .chip[aria-pressed="true"]{background:var(--rood);border-color:var(--rood);color:var(--op-rood);font-weight:700}
+  .naam-label{display:block;font-size:13.5px;font-weight:700;margin:20px 0 8px}
+  button.verstuur{margin-top:28px;width:100%;background:var(--rood);color:var(--op-rood);border:none;font-weight:700;font-size:15px;padding:15px 20px;border-radius:10px;cursor:pointer;font-family:inherit}
+  button.verstuur:disabled{opacity:.6;cursor:wait}
+  .melding{margin-top:12px;font-size:13px;color:var(--muted);text-align:center}
+  .voettekst{text-align:center;font-size:11px;color:var(--muted);margin-top:16px;line-height:1.5}
+  .bedankt{text-align:center;padding:20px 0}
+  .bedankt p{font-size:15px;margin:0 0 6px;font-weight:700}
+  pre.voorbeeld{text-align:left;background:var(--zacht);border:1px solid var(--rand);border-radius:8px;padding:12px;font-size:11.5px;overflow-x:auto;white-space:pre-wrap;color:var(--tekst);margin-top:16px}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="banner" id="voorbeeld-banner" hidden>Voorbeeld. Je kunt alles uitproberen. Antwoorden worden niet verstuurd: na "Versturen" zie je wat er opgeslagen zou worden.</div>
+<div class="kaart">
+  <div class="kop">
+    <img class="logo" src="https://www.eggspress.nl/wp-content/uploads/2026/03/eggspress.svg" alt="Eggspress">
+    <div class="eyebrow">Korte vragenlijst voor verkopers</div>
+    <h1>Wat helpt jou verder?</h1>
+  </div>
+  <form class="lijf" id="formulier" novalidate>
+    <p class="intro">Hoi! Ik wil de app en de hulp voor jullie beter maken. Jullie weten het beste wat werkt. Het invullen duurt ongeveer 3 minuten. Er is geen goed of fout.</p>
+
+    <label class="naam-label" for="voornaam">Wat is je naam?</label>
+    <div class="rij">
+      <div><input type="text" id="voornaam" placeholder="Voornaam" autocomplete="given-name"></div>
+      <div><input type="text" id="achternaam" placeholder="Achternaam" autocomplete="family-name"></div>
+    </div>
+
+    <div id="vragen"></div>
+
+    <button type="submit" class="verstuur">Versturen</button>
+    <div class="melding" id="melding" hidden></div>
+    <div class="voettekst">Je antwoorden gaan alleen naar Eggspress. In mijn schoolverslag komt je naam niet.</div>
+  </form>
+</div>
+
+<script>
+// Vragen in logische volgorde: hoe gaat het nu -> klanten bijhouden (eerst de vorm, dan wat erin moet) -> meer klanten -> eigen idee.
+// 'toon' bepaalt of een vraag zichtbaar is, op basis van eerdere antwoorden.
+const V = [
+  {sectie:'Hoe gaat het nu?'},
+  {id:'nu_hoe', type:'meer', label:'Hoe houd je nu bij wie je klanten zijn en wie heeft betaald?', hint:'Meerdere antwoorden mogelijk',
+   opties:['In de Eggspress-app','Op papier of in een schriftje','In Excel of in notities op mijn telefoon','Ik onthoud het gewoon','Ik houd het eigenlijk niet bij']},
+  {id:'wie', type:'een', label:'Wie doet dat bijhouden meestal?', opties:['Ik zelf','Mijn vader of moeder','We doen het samen']},
+  {id:'zelf_doen', type:'een', vervolg:true, toon:a=>a.wie==='Mijn vader of moeder' || a.wie==='We doen het samen', label:'Zou je het bijhouden later zelf willen doen?', opties:['Ja, graag','Ja, maar eerst samen','Nee, het is goed zo']},
+  {id:'meer_klanten', type:'een', label:'Wil je meer klanten dan je nu hebt?', sub:'Nee zeggen is helemaal goed. Niet iedereen hoeft te groeien.', opties:['Ja','Weet ik niet','Nee, het is goed zo']},
+
+  {sectie:'Je klanten bijhouden'},
+  {id:'vorm', type:'een', hussel:true, label:'Hoe zou jij je klanten het liefst bijhouden?', opties:['In de Eggspress-app','Op een papieren lijst van Eggspress','Zoals ik het nu doe, ik heb niks nodig']},
+  {id:'app_functies', type:'meer', vervolg:true, hussel:true, toon:a=>a.vorm==='In de Eggspress-app', label:'Wat moet de app dan zeker kunnen?', hint:'Meerdere antwoorden mogelijk',
+   opties:['Afvinken wie betaald heeft','Zien wie deze week aan de beurt is','Mijn klanten in de volgorde van mijn route','Mijn oude lijst in één keer in de app zetten','Een klant op pauze zetten, bijvoorbeeld bij vakantie','Betaalverzoeken in één keer sturen na mijn ronde','Een seintje als ik nog iets moet invullen','Zien hoeveel klanten ik heb','Zien hoeveel ik verdien','Weet ik niet']},
+  {id:'app_meest', type:'een', vervolg:true, toon:a=>echt(a.app_functies).length>1, label:'Welke is voor jou het belangrijkst?', hint:'Kies er één', opties:a=>echt(a.app_functies)},
+  {id:'papier_reden', type:'meer', vervolg:true, toon:a=>a.vorm==='Op een papieren lijst van Eggspress', label:'Waarom liever op papier?', hint:'Meerdere antwoorden mogelijk',
+   opties:['Ik heb geen eigen telefoon','Papier vind ik makkelijker','Ik vergeet de app','Anders'], anders:true},
+  {id:'papier_inhoud', type:'meer', vervolg:true, hussel:true, toon:a=>a.vorm==='Op een papieren lijst van Eggspress', label:'Wat moet er dan zeker op de papieren lijst staan?', hint:'Meerdere antwoorden mogelijk',
+   opties:['Een vakje om af te vinken wie betaald heeft','Per klant hoe vaak die eieren wil, zodat ik zie wie deze week aan de beurt is','Mijn klanten in de volgorde van mijn route','Lege regels om nieuwe klanten op te schrijven','Een plek om te zien hoeveel klanten ik heb','Een plek om bij te houden hoeveel ik verdien','Weet ik niet']},
+  {id:'papier_meest', type:'een', vervolg:true, toon:a=>echt(a.papier_inhoud).length>1, label:'Welke is voor jou het belangrijkst?', hint:'Kies er één', opties:a=>echt(a.papier_inhoud)},
+
+  {sectie:'Meer klanten', uitleg:'Deze vragen zie je alleen als je meer klanten wilt, of als je het nog niet weet.', toon:a=>a.meer_klanten && a.meer_klanten!=='Nee, het is goed zo'},
+  {id:'hulp', type:'meer', hussel:true, toon:a=>a.meer_klanten && a.meer_klanten!=='Nee, het is goed zo', label:'Wat zou jou helpen om meer klanten te krijgen?', hint:'Meerdere antwoorden mogelijk',
+   opties:['Elke week een paar adressen waar ik kan aanbellen','Een kaart van mijn wijk om af te strepen','Samen met Otto een doel kiezen om naartoe te groeien, en wat ik als eerste kan doen','Een herinnering op mijn bezorgdag, met een tip','Een ervaren verkoper die me een keer helpt','Een voorbeeldflyer of een zin voor aan de deur','Een kort filmpje over wat je aan de deur zegt','Samen met andere verkopers tips delen','Een kleine beloning als ik meer klanten heb','Niets van deze']},
+  {id:'hulp_meest', type:'een', vervolg:true, toon:a=>echt(a.hulp).length>1, label:'En welke helpt je het méést?', hint:'Kies er één',
+   opties:a=>echt(a.hulp)},
+
+  {sectie:'Tot slot'},
+  {id:'idee', type:'open', label:'Heb je zelf een idee om het verkopen makkelijker of leuker te maken?', hint:'Mag ook leeg blijven'}
+];
+
+const VERSIE = '2026-11-hulp';
+const LIVE = /github\.io$/.test(location.hostname);
+const FUNCTIE = 'https://ckpxdkodiaxpsfmackat.supabase.co/functions/v1/vragenlijst-opslaan';
+const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrcHhka29kaWF4cHNmbWFja2F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MDcyODksImV4cCI6MjA5NzA4MzI4OX0.kzzUr4AGPcypNXPoBWyb2WpKpK8Gq2fNyFfb9UJGiL0';
+
+// Opties die alles uitsluiten: kies je die, dan gaan de andere uit (en andersom)
+const LOS = ['Weet ik niet','Niets van deze','Ik houd het eigenlijk niet bij'];
+const echt = l => (l || []).filter(o => !LOS.includes(o) && o !== 'Anders');
+// Volgorde per persoon door elkaar (vaste slotopties blijven onderaan), zodat de eerste optie niet vanzelf vaker wordt gekozen
+const VAST_ACHTER = ['Weet ik niet','Niets van deze','Zoals ik het nu doe, ik heb niks nodig','Anders'];
+function hussel(l){ const a = l.filter(o => !VAST_ACHTER.includes(o)), b = l.filter(o => VAST_ACHTER.includes(o));
+  for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a.concat(b); }
+V.forEach(v => { if (v.hussel && Array.isArray(v.opties)) v.opties = hussel(v.opties); });
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const A = {};            // antwoorden
+const ANDERS = {};       // vrije tekst bij "Anders"
+
+function opties(v){ return typeof v.opties === 'function' ? v.opties(A) : v.opties; }
+
+function render(){
+  const doel = document.getElementById('vragen');
+  // focus en tekstvelden bewaren
+  const idee = document.getElementById('v-idee'); const ideeWaarde = idee ? idee.value : '';
+  const andersVelden = {}; document.querySelectorAll('[data-anders]').forEach(el => andersVelden[el.dataset.anders] = el.value);
+  let html = '';
+  V.forEach(v => {
+    if (v.toon && !v.toon(A)) return;
+    if (v.sectie){ html += `<div class="sectie">${esc(v.sectie)}</div>` + (v.uitleg ? `<p class="sectie-uitleg">${esc(v.uitleg)}</p>` : ''); return; }
+    const kop = `${esc(v.label)}${v.hint ? ` <span class="hint">(${esc(v.hint)})</span>` : ''}${v.sub ? `<span class="sub">${esc(v.sub)}</span>` : ''}`;
+    const cls = 'vraag' + (v.vervolg ? ' vervolg-vraag' : '');
+    if (v.type === 'open'){ html += `<div class="${cls}"><label for="v-${v.id}">${kop}</label><textarea id="v-${v.id}"></textarea></div>`; return; }
+    const gekozen = A[v.id];
+    const chips = opties(v).map(o => {
+      const aan = v.type==='meer' ? (gekozen||[]).includes(o) : gekozen===o;
+      return `<button type="button" class="chip" aria-pressed="${aan}" data-vraag="${v.id}" data-soort="${v.type}">${esc(o)}</button>`;
+    }).join('');
+    let anders = '';
+    if (v.anders && (gekozen||[]).includes('Anders')) anders = `<div style="margin-top:10px"><input type="text" data-anders="${v.id}" aria-label="Wat anders?" placeholder="Wat anders? Typ het hier"></div>`;
+    html += `<div class="${cls}"><div class="label">${kop}</div><div class="chips">${chips}</div>${anders}</div>`;
+  });
+  doel.innerHTML = html;
+  const nieuwIdee = document.getElementById('v-idee'); if (nieuwIdee) nieuwIdee.value = ideeWaarde;
+  document.querySelectorAll('[data-anders]').forEach(el => { if (andersVelden[el.dataset.anders]) el.value = andersVelden[el.dataset.anders]; });
+}
+
+// Antwoorden van verborgen vragen weggooien, zodat er niets blijft hangen
+function opschonen(){
+  let veranderd = true;
+  while (veranderd){
+    veranderd = false;
+    V.forEach(v => {
+      if (!v.id || !(v.id in A)) return;
+      if (v.toon && !v.toon(A)){ delete A[v.id]; veranderd = true; return; }
+      if (v.type==='een' && !opties(v).includes(A[v.id])){ delete A[v.id]; veranderd = true; }
+    });
+  }
+}
+
+document.getElementById('vragen').addEventListener('click', e => {
+  const knop = e.target.closest('button.chip'); if (!knop) return;
+  const id = knop.dataset.vraag, o = knop.textContent;
+  if (knop.dataset.soort === 'meer'){
+    const lijst = A[id] || [];
+    if (lijst.includes(o)) A[id] = lijst.filter(x => x!==o);
+    else if (LOS.includes(o)) A[id] = [o];
+    else A[id] = [...lijst.filter(x => !LOS.includes(x)), o];
+    if (!A[id].length) delete A[id];
+  } else {
+    A[id] = A[id]===o ? undefined : o; if (A[id]===undefined) delete A[id];
+  }
+  opschonen(); render();
+  const terug = document.querySelector(`button.chip[data-vraag="${id}"]`); if (terug) terug.focus({preventScroll:true});
+});
+
+function verzamel(){
+  const uit = {};
+  V.forEach(v => { if (v.id && v.id in A && (!v.toon || v.toon(A))) uit[v.id] = A[v.id]; });
+  document.querySelectorAll('[data-anders]').forEach(el => { if (el.value.trim()) uit[el.dataset.anders + '_anders'] = el.value.trim(); });
+  const idee = document.getElementById('v-idee'); if (idee && idee.value.trim()) uit.idee = idee.value.trim();
+  uit._versie = VERSIE;
+  return uit;
+}
+
+document.getElementById('voorbeeld-banner').hidden = LIVE;
+render();
+
+document.getElementById('formulier').addEventListener('submit', async e => {
+  e.preventDefault();
+  const melding = document.getElementById('melding'), knop = document.querySelector('button.verstuur');
+  const voornaam = document.getElementById('voornaam').value.trim(), achternaam = document.getElementById('achternaam').value.trim();
+  melding.hidden = false; melding.style.color = '';
+  if (!voornaam || !achternaam){ melding.textContent = 'Vul je voor- en achternaam in.'; melding.style.color = 'var(--fout)'; document.getElementById(voornaam ? 'achternaam' : 'voornaam').focus(); return; }
+  const antwoorden = verzamel();
+  const bedankt = `<div class="bedankt"><p>Super bedankt, ${esc(voornaam)}!</p><p class="intro" style="margin:0">Je hebt me echt enorm geholpen.</p></div>`;
+  if (!LIVE){
+    document.getElementById('formulier').innerHTML = bedankt + `<pre class="voorbeeld">Voorbeeld: dit zou worden opgeslagen\n\n${esc(JSON.stringify({voornaam, achternaam, antwoorden}, null, 2))}</pre>`;
+    window.scrollTo(0,0); return;
+  }
+  knop.disabled = true; knop.textContent = 'Bezig met versturen...'; melding.textContent = '';
+  try {
+    const res = await fetch(FUNCTIE, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${ANON}`, apikey:ANON}, body: JSON.stringify({voornaam, achternaam, antwoorden})});
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.success) throw new Error(data.fout || 'Er ging iets mis bij het versturen.');
+    document.getElementById('formulier').innerHTML = bedankt; window.scrollTo(0,0);
+  } catch (err){
+    knop.disabled = false; knop.textContent = 'Versturen';
+    melding.textContent = err.message + ' Probeer het nog een keer.'; melding.style.color = 'var(--fout)';
+  }
+});
+</script>
+
+</body>
+</html>
