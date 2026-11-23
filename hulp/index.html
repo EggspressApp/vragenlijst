@@ -113,7 +113,7 @@ const V = [
 
   {sectie:'Meer klanten', uitleg:'Deze vragen zie je alleen als je meer klanten wilt, of als je het nog niet weet.', toon:a=>a.meer_klanten && a.meer_klanten!=='Nee, het is goed zo'},
   {id:'hulp', type:'meer', hussel:true, toon:a=>a.meer_klanten && a.meer_klanten!=='Nee, het is goed zo', label:'Wat zou jou helpen om meer klanten te krijgen?', hint:'Meerdere antwoorden mogelijk',
-   opties:['Elke week een klein doel, zoals een paar adressen om aan te bellen','Een kaart van mijn wijk om af te strepen','Samen met Otto een doel kiezen om naartoe te groeien, en wat ik als eerste kan doen','Een herinnering op mijn bezorgdag, met een tip','Een ervaren verkoper die me een keer helpt','Een voorbeeldflyer of een zin voor aan de deur','Een kort filmpje over wat je aan de deur zegt','Samen met andere verkopers tips delen','Een kleine beloning als ik meer klanten heb','Niets van deze']},
+   opties:['Elke week een klein, haalbaar doel, zoals een paar nieuwe klanten','Een kaart van mijn wijk om af te strepen','Samen met Otto een doel kiezen om naartoe te groeien, en wat ik als eerste kan doen','Een herinnering op mijn bezorgdag, met een tip','Een ervaren verkoper die me een keer helpt','Een voorbeeldflyer of een zin voor aan de deur','Een kort filmpje over wat je aan de deur zegt','Samen met andere verkopers tips delen','Een kleine beloning als ik meer klanten heb','Niets van deze']},
   {id:'hulp_meest', type:'een', vervolg:true, toon:a=>echt(a.hulp).length>1, label:'En welke helpt je het méést?', hint:'Kies er één',
    opties:a=>echt(a.hulp)},
 
@@ -131,7 +131,7 @@ const LOS = ['Weet ik niet','Niets van deze','Ik houd het eigenlijk niet bij'];
 const echt = l => (l || []).filter(o => !LOS.includes(o) && o !== 'Anders');
 // Volgorde per persoon door elkaar (vaste slotopties blijven onderaan), zodat de eerste optie niet vanzelf vaker wordt gekozen
 const VAST_ACHTER = ['Weet ik niet','Niets van deze','Zoals ik het nu doe, ik heb niks nodig','Anders'];
-const VAST_VOOR = ['Elke week een klein doel, zoals een paar adressen om aan te bellen'];
+const VAST_VOOR = ['Elke week een klein, haalbaar doel, zoals een paar nieuwe klanten'];
 function hussel(l){ const v = l.filter(o => VAST_VOOR.includes(o)), b = l.filter(o => VAST_ACHTER.includes(o));
   const a = l.filter(o => !VAST_ACHTER.includes(o) && !VAST_VOOR.includes(o));
   for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return v.concat(a, b); }
