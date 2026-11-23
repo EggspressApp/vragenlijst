@@ -103,7 +103,7 @@ const V = [
   {sectie:'Je klanten bijhouden'},
   {id:'vorm', type:'een', hussel:true, label:'Hoe zou jij je klanten het liefst bijhouden?', opties:['In de Eggspress-app','Op een papieren lijst van Eggspress','Zoals ik het nu doe, ik heb niks nodig']},
   {id:'app_functies', type:'meer', vervolg:true, hussel:true, toon:a=>a.vorm==='In de Eggspress-app', label:'Wat moet de app dan zeker kunnen?', hint:'Meerdere antwoorden mogelijk',
-   opties:['Afvinken wie betaald heeft','Zien wie deze week aan de beurt is','Mijn klanten in de volgorde van mijn route','Mijn oude lijst in één keer in de app zetten','Een klant op pauze zetten, bijvoorbeeld bij vakantie','Betaalverzoeken in één keer sturen na mijn ronde','Een seintje als ik nog iets moet invullen','Zien hoeveel klanten ik heb','Zien hoeveel ik verdien','Weet ik niet']},
+   opties:['Afvinken wie betaald heeft','Zien wie deze week aan de beurt is','Mijn klanten in de volgorde van mijn route','Mijn oude lijst in één keer in de app zetten','Een klant op pauze zetten, bijvoorbeeld bij vakantie','Betaalverzoeken in één keer sturen na mijn ronde','Een seintje als ik nog iets moet invullen','Zien hoeveel klanten ik heb','Zien hoeveel ik verdien','Eieren bij Eggspress bestellen in de app','Weet ik niet']},
   {id:'app_meest', type:'een', vervolg:true, toon:a=>echt(a.app_functies).length>1, label:'Welke is voor jou het belangrijkst?', hint:'Kies er één', opties:a=>echt(a.app_functies)},
   {id:'papier_reden', type:'meer', vervolg:true, toon:a=>a.vorm==='Op een papieren lijst van Eggspress', label:'Waarom liever op papier?', hint:'Meerdere antwoorden mogelijk',
    opties:['Ik heb geen eigen telefoon','Papier vind ik makkelijker','Ik vergeet de app','Anders'], anders:true},
