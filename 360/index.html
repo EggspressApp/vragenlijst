@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Feedbackformulier afstuderen</title>
+<meta name="robots" content="noindex">
+<style>
+  /* Huisstijl van de bestaande Eggspress-vragenlijst: rode kop, crème ondergrond, één kaart, keuzechips */
+  :root{
+    --rood:#E0281C; --creme:#FAF6EE; --kaart:#FFFFFF; --rand:#EAE1CF;
+    --tekst:#241C14; --muted:#8C7F6B; --op-rood:#FFFFFF; --fout:#B3261E; --banner:#FFF4D6; --banner-tekst:#5C4712;
+    --zacht:#F4EEE2;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --rood:#F0564B; --creme:#1B1712; --kaart:#25201A; --rand:#3A3228;
+      --tekst:#F3ECE0; --muted:#B3A690; --op-rood:#FFFFFF; --fout:#FF8A80; --banner:#3A3218; --banner-tekst:#F2DFA6;
+      --zacht:#2E2820; color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --rood:#F0564B; --creme:#1B1712; --kaart:#25201A; --rand:#3A3228;
+    --tekst:#F3ECE0; --muted:#B3A690; --op-rood:#FFFFFF; --fout:#FF8A80; --banner:#3A3218; --banner-tekst:#F2DFA6;
+    --zacht:#2E2820; color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--creme);color:var(--tekst);margin:0;
+       padding-block:28px 60px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+  .banner{max-width:560px;margin:0 auto 14px;background:var(--banner);color:var(--banner-tekst);border-radius:10px;padding:10px 14px;font-size:12.5px;line-height:1.5}
+  .kaart{max-width:560px;margin:0 auto;background:var(--kaart);border:1px solid var(--rand);border-radius:16px;overflow:hidden;box-shadow:0 2px 18px rgba(36,28,20,.05)}
+  .kop{background:var(--rood);padding:24px 26px 22px;text-align:center;color:var(--op-rood)}
+  .logo{height:26px;width:auto;max-width:100%;background:#fff;padding:8px 16px;border-radius:8px;display:inline-block;margin-bottom:14px;box-sizing:content-box}
+  .kop .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+  .kop h1{font-size:20px;margin:0;font-weight:800;text-wrap:balance}
+  .lijf{padding:26px;counter-reset:vraag}
+  .intro{font-size:14px;color:var(--muted);line-height:1.6;margin:0}
+  .sectie{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--rood);font-weight:800;margin:30px 0 0;padding-top:18px;border-top:1px solid var(--rand)}
+  .sectie-uitleg{font-size:12.5px;color:var(--muted);margin:6px 0 0;line-height:1.5}
+  .vraag{margin-top:20px;counter-increment:vraag}
+  .vraag.vervolg-vraag{margin-top:12px;padding:14px;background:var(--zacht);border:1px solid var(--rand);border-radius:10px}
+  .vraag > label, .vraag > .label{display:block;font-size:13.5px;font-weight:700;margin:0 0 8px;line-height:1.45}
+  .vraag > label::before, .vraag > .label::before{content:counter(vraag) ". ";color:var(--rood);font-variant-numeric:tabular-nums}
+  .hint{font-weight:400;color:var(--muted)}
+  .sub{display:block;font-weight:400;font-size:12.5px;color:var(--muted);margin-top:3px}
+  .rij{display:flex;gap:10px;flex-wrap:wrap}
+  .rij > div{flex:1 1 180px;min-width:0}
+  input[type=text],textarea{width:100%;padding:11px 13px;border:1px solid var(--rand);border-radius:8px;font-size:14px;font-family:inherit;background:var(--kaart);color:var(--tekst)}
+  textarea{resize:vertical;min-height:64px}
+  input:focus,textarea:focus,.chip:focus-visible{outline:2px solid var(--rood);outline-offset:1px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--rand);border-radius:20px;padding:8px 14px;font-size:12.5px;cursor:pointer;background:var(--creme);color:var(--tekst);font-family:inherit;text-align:left;line-height:1.35}
+  .chip[aria-pressed="true"]{background:var(--rood);border-color:var(--rood);color:var(--op-rood);font-weight:700}
+  .naam-label{display:block;font-size:13.5px;font-weight:700;margin:20px 0 8px}
+  button.verstuur{margin-top:28px;width:100%;background:var(--rood);color:var(--op-rood);border:none;font-weight:700;font-size:15px;padding:15px 20px;border-radius:10px;cursor:pointer;font-family:inherit}
+  button.verstuur:disabled{opacity:.6;cursor:wait}
+  .melding{margin-top:12px;font-size:13px;color:var(--muted);text-align:center}
+  .voettekst{text-align:center;font-size:11px;color:var(--muted);margin-top:16px;line-height:1.5}
+  .bedankt{text-align:center;padding:20px 0}
+  .bedankt p{font-size:15px;margin:0 0 6px;font-weight:700}
+  pre.voorbeeld{text-align:left;background:var(--zacht);border:1px solid var(--rand);border-radius:8px;padding:12px;font-size:11.5px;overflow-x:auto;white-space:pre-wrap;color:var(--tekst);margin-top:16px}
+  .vaard{margin-top:14px;padding:12px 14px;border:1px solid var(--rand);border-radius:10px;background:var(--creme)}
+  .vaard.mist{border-color:var(--fout)}
+  .vaard-kop{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:13.5px;font-weight:700}
+  .vaard-kop span:first-child{min-width:0}
+  .nr{color:var(--rood);font-variant-numeric:tabular-nums;margin-right:4px}
+  .scores{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+  .score{border:1px solid var(--rand);border-radius:8px;padding:8px 4px;background:var(--kaart);color:var(--tekst);font-family:inherit;cursor:pointer;display:grid;gap:2px;justify-items:center;line-height:1.15}
+  .score b{font-size:16px}
+  .score small{font-size:10.5px;color:var(--muted)}
+  .score[aria-pressed="true"]{background:var(--rood);border-color:var(--rood);color:var(--op-rood)}
+  .score[aria-pressed="true"] small{color:var(--op-rood)}
+  .score:focus-visible,.toel-knop:focus-visible{outline:2px solid var(--rood);outline-offset:1px}
+  .toel-knop{margin-top:8px;background:none;border:none;color:var(--muted);font-size:12.5px;padding:2px 0;cursor:pointer;font-family:inherit;text-decoration:underline}
+  .toel{margin-top:8px}
+  .schaal{margin:10px 0 0;padding:10px 14px;background:var(--zacht);border-radius:10px;font-size:12.5px;line-height:1.7;color:var(--tekst)}
+  .deel-keuze{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+  .vast{font-size:14px;margin:6px 0 0}
+  .opgeslagen{font-size:11.5px;color:var(--muted);text-align:center;margin-top:8px}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="banner" id="voorbeeld-banner" hidden>Voorbeeld. Je kunt alles uitproberen. Er wordt niets verstuurd: na "Versturen" zie je wat er opgeslagen zou worden.</div>
+<div class="kaart">
+  <div class="kop">
+    <img class="logo" src="https://www.eggspress.nl/wp-content/uploads/2026/03/eggspress.svg" alt="Eggspress">
+    <div class="eyebrow">Hogeschool Windesheim, Commerciële Economie</div>
+    <h1>Feedbackformulier afstuderen</h1>
+  </div>
+  <form class="lijf" id="formulier" novalidate>
+    <p class="intro">Dit is het 360 graden feedbackformulier van de opleiding, met precies dezelfde vragen. Het wordt twee keer ingevuld: halverwege (deel A) en richting het einde van de afstudeerperiode (deel B). Na het invullen bespreken we de feedback samen. Het invullen duurt ongeveer 10 minuten.</p>
+
+    <div class="deel-keuze" id="deel-keuze" role="group" aria-label="Welk deel vul je in?">
+      <button type="button" class="chip" data-deel="A">Deel A: halverwege</button>
+      <button type="button" class="chip" data-deel="B">Deel B: richting einde</button>
+    </div>
+
+    <div class="sectie">Gegevens</div>
+    <div class="vraag"><div class="label">Naam student</div><p class="vast">Otto Bijkerk</p></div>
+    <label class="naam-label" for="voornaam">Naam beoordelaar</label>
+    <div class="rij">
+      <div><input type="text" id="voornaam" placeholder="Voornaam" autocomplete="given-name"></div>
+      <div><input type="text" id="achternaam" placeholder="Achternaam" autocomplete="family-name"></div>
+    </div>
+    <label class="naam-label" for="functie">Functie beoordelaar</label>
+    <input type="text" id="functie" placeholder="Bijvoorbeeld: bedrijfsbegeleider">
+    <div class="naam-label">Relatie tot student</div>
+    <div class="chips" id="relatie">
+      <button type="button" class="chip" aria-pressed="false" data-relatie="Bedrijfsmentor">Bedrijfsmentor</button>
+      <button type="button" class="chip" aria-pressed="false" data-relatie="Collega">Collega</button>
+    </div>
+
+    <div class="sectie">Vaardigheden</div>
+    <p class="sectie-uitleg">Kies per vaardigheid het niveau dat het beste past. Een korte toelichting mag, maar hoeft niet. De vaardigheden komen uit de CE Skills Guide.</p>
+    <div class="schaal">1 = Beginner (heel weinig ontwikkeld)<br>2 = Versneller (beetje ontwikkeld)<br>3 = Gevorderd (behoorlijk ontwikkeld)<br>4 = Expert (zeer sterk ontwikkeld)</div>
+    <div id="vaardigheden"></div>
+
+    <div class="sectie">Algemene feedback</div>
+    <div id="algemeen"></div>
+
+    <button type="submit" class="verstuur">Versturen</button>
+    <div class="melding" id="melding" hidden></div>
+    <div class="opgeslagen" id="opgeslagen" hidden>Je antwoorden worden op dit toestel bewaard tot je verstuurt.</div>
+    <div class="voettekst">De antwoorden gaan alleen naar Otto. Ze komen in het afstudeerportfolio, in het formulier van de opleiding.</div>
+  </form>
+</div>
+
+<script>
+const VAARD = ['Ondernemend vermogen','Klantgericht werken','Creatief denken','Analytisch vermogen','Commercieel inzicht',
+  'Communicatieve vaardigheden','Samenwerken','Onderhandelen','Leiderschap & initiatief','Digitale vaardigheden',
+  'Onderzoeksvaardigheden','Projectmatig werken','Probleemoplossend vermogen','Resultaatgerichtheid','Zelfreflectie & leren',
+  'Maatschappelijke verantwoordelijkheid'];
+const NIVEAU = ['Beginner','Versneller','Gevorderd','Expert'];
+const ALG = {
+  A: ['Welke waarde voegt de student toe aan uw organisatie of team?','Waar ziet u de grootste ontwikkelkans?','Advies aan de student voor de komende periode:'],
+  B: ['Welke waarde voegt de student toe aan uw organisatie of team?','Waar ziet u de grootste ontwikkelkans?','Advies aan de student voor de komende periode:','Wat is er verbeterd ten opzichte van de feedback halverwege?']
+};
+const LIVE = /github\.io$/.test(location.hostname);
+const FUNCTIE = 'https://ckpxdkodiaxpsfmackat.supabase.co/functions/v1/vragenlijst-opslaan';
+const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrcHhka29kaWF4cHNmbWFja2F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MDcyODksImV4cCI6MjA5NzA4MzI4OX0.kzzUr4AGPcypNXPoBWyb2WpKpK8Gq2fNyFfb9UJGiL0';
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+
+let deel = (new URLSearchParams(location.search).get('deel') || 'A').toUpperCase() === 'B' ? 'B' : 'A';
+const S = {}; const T = {}; const G = {}; let relatie = '';
+const BEWAAR = () => 'eg360-' + deel;
+
+function laad(){
+  try { const d = JSON.parse(localStorage.getItem(BEWAAR()) || '{}');
+    Object.assign(S, d.S || {}); Object.assign(T, d.T || {}); Object.assign(G, d.G || {}); relatie = d.relatie || '';
+    ['voornaam','achternaam','functie'].forEach(id => { if (d[id]) document.getElementById(id).value = d[id]; });
+  } catch (e) {}
+}
+function bewaar(){
+  try { const d = {S, T, G, relatie}; ['voornaam','achternaam','functie'].forEach(id => d[id] = document.getElementById(id).value);
+    localStorage.setItem(BEWAAR(), JSON.stringify(d)); document.getElementById('opgeslagen').hidden = false; } catch (e) {}
+}
+
+function render(){
+  document.querySelectorAll('[data-deel]').forEach(b => b.setAttribute('aria-pressed', b.dataset.deel === deel));
+  document.querySelectorAll('[data-relatie]').forEach(b => b.setAttribute('aria-pressed', b.dataset.relatie === relatie));
+  document.getElementById('vaardigheden').innerHTML = VAARD.map((v, i) => {
+    const n = i + 1, open = (T[n] || '') !== '';
+    return `<div class="vaard" id="vd-${n}"><div class="vaard-kop"><span><span class="nr">${n}.</span>${esc(v)}</span></div>
+      <div class="scores" role="group" aria-label="${esc(v)}">${NIVEAU.map((nv, j) =>
+        `<button type="button" class="score" data-s="${n}" data-w="${j+1}" aria-pressed="${S[n] === j+1}"><b>${j+1}</b><small>${nv}</small></button>`).join('')}</div>
+      <button type="button" class="toel-knop" data-t="${n}" ${open ? 'hidden' : ''}>+ Toelichting toevoegen</button>
+      <div class="toel" ${open ? '' : 'hidden'}><textarea id="t-${n}" data-tv="${n}" aria-label="Toelichting bij ${esc(v)}" placeholder="Korte toelichting (mag leeg blijven)">${esc(T[n] || '')}</textarea></div></div>`;
+  }).join('');
+  document.getElementById('algemeen').innerHTML = ALG[deel].map((q, i) =>
+    `<div class="vraag"><label for="g-${i+1}">${esc(q)}</label><textarea id="g-${i+1}" data-g="${i+1}">${esc(G[i+1] || '')}</textarea></div>`).join('');
+}
+
+document.getElementById('formulier').addEventListener('click', e => {
+  const d = e.target.closest('[data-deel]');
+  if (d){ bewaar(); deel = d.dataset.deel; for (const o of [S, T, G]) for (const k in o) delete o[k]; laad(); render(); return; }
+  const r = e.target.closest('[data-relatie]');
+  if (r){ relatie = relatie === r.dataset.relatie ? '' : r.dataset.relatie; render(); bewaar(); return; }
+  const s = e.target.closest('[data-s]');
+  if (s){ const n = +s.dataset.s, w = +s.dataset.w; S[n] = S[n] === w ? undefined : w; if (S[n] === undefined) delete S[n];
+    s.parentElement.querySelectorAll('.score').forEach(b => b.setAttribute('aria-pressed', S[n] === +b.dataset.w));
+    document.getElementById('vd-' + n).classList.remove('mist'); bewaar(); return; }
+  const t = e.target.closest('[data-t]');
+  if (t){ t.hidden = true; const box = t.nextElementSibling; box.hidden = false; box.querySelector('textarea').focus(); }
+});
+document.getElementById('formulier').addEventListener('input', e => {
+  if (e.target.dataset.tv) T[e.target.dataset.tv] = e.target.value;
+  if (e.target.dataset.g) G[e.target.dataset.g] = e.target.value;
+  bewaar();
+});
+
+function verzamel(){
+  const uit = {deel, relatie, functie: document.getElementById('functie').value.trim()};
+  for (let n = 1; n <= 16; n++){ if (S[n]) uit['s' + n] = S[n]; if ((T[n] || '').trim()) uit['t' + n] = T[n].trim(); }
+  ALG[deel].forEach((q, i) => { if ((G[i+1] || '').trim()) uit['a' + (i+1)] = G[i+1].trim(); });
+  uit._versie = '2026-360-' + deel;
+  return uit;
+}
+
+document.getElementById('voorbeeld-banner').hidden = LIVE;
+laad(); render();
+
+document.getElementById('formulier').addEventListener('submit', async e => {
+  e.preventDefault();
+  const melding = document.getElementById('melding'), knop = document.querySelector('button.verstuur');
+  const voornaam = document.getElementById('voornaam').value.trim(), achternaam = document.getElementById('achternaam').value.trim();
+  melding.hidden = false; melding.style.color = 'var(--fout)';
+  if (!voornaam || !achternaam){ melding.textContent = 'Vul uw voor- en achternaam in.'; document.getElementById(voornaam ? 'achternaam' : 'voornaam').focus(); return; }
+  const mist = []; for (let n = 1; n <= 16; n++) if (!S[n]) { mist.push(n); document.getElementById('vd-' + n).classList.add('mist'); }
+  if (mist.length){ melding.textContent = 'Kies nog een score bij vaardigheid ' + mist.join(', ') + '.'; document.getElementById('vd-' + mist[0]).scrollIntoView({behavior:'smooth', block:'center'}); return; }
+  const antwoorden = verzamel();
+  const bedankt = `<div class="bedankt"><p>Hartelijk dank, ${esc(voornaam)}!</p><p class="intro" style="margin:0">De feedback (deel ${deel}) is ontvangen. We bespreken hem binnenkort samen.</p></div>`;
+  if (!LIVE){
+    document.getElementById('formulier').innerHTML = bedankt + `<pre class="voorbeeld">Voorbeeld: dit zou worden opgeslagen\n\n${esc(JSON.stringify({voornaam, achternaam, antwoorden}, null, 2))}</pre>`;
+    window.scrollTo(0,0); return;
+  }
+  knop.disabled = true; knop.textContent = 'Bezig met versturen...'; melding.textContent = ''; melding.style.color = '';
+  try {
+    const res = await fetch(FUNCTIE, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${ANON}`, apikey:ANON}, body: JSON.stringify({voornaam, achternaam, antwoorden})});
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.success) throw new Error(data.fout || 'Er ging iets mis bij het versturen.');
+    try { localStorage.removeItem(BEWAAR()); } catch (e2) {}
+    document.getElementById('formulier').innerHTML = bedankt; window.scrollTo(0,0);
+  } catch (err){
+    knop.disabled = false; knop.textContent = 'Versturen';
+    melding.textContent = err.message + ' Probeer het nog een keer.'; melding.style.color = 'var(--fout)';
+  }
+});
+</script>
+
+</body>
+</html>
